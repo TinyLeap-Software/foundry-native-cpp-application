@@ -1,0 +1,107 @@
+
+plugins {
+    id 'cpp-application'
+    id 'cpp-unit-test'
+    id 'xcode'
+    id 'visual-studio'
+}
+
+repositories {
+    // Foundry native repository for dependencies.
+    maven {
+        url = "https://tinyleap.io/foundry/repository/libs-release/"
+    }
+}
+
+application {
+
+    //Build flavours
+    buildTypes {
+        debug
+        release
+    }
+
+    //Target machines for your project.
+    targetMachines = [
+            //currently has limited support for Windows.
+            machines.windows.x86_64,
+            machines.macOS.x86_64,
+            machines.linux.x86_64
+    ]
+
+    privateHeaders.from {
+        files('src/main/cpp')
+    }
+
+    dependencies {
+        //Dependencies for your application
+        //see https://tinyleap.io/foundry/#browse/browse:libs-release:io%2Ftinyleap%2Fnative for the catalog.
+        // Using SQLite for this sample.
+        implementation('io.tinyleap.native:sqlite:3.31.1')
+        //
+    }
+
+
+    binaries.configureEach {
+        println "Building for Platform " + org.gradle.internal.os.OperatingSystem.current()
+        def compileTask = compileTask.get()
+        // https://en.wikipedia.org/wiki/Position-independent_code
+        compileTask.positionIndependentCode = "true"
+
+        if(compileTask.isOptimized()){
+            //Release Build
+            compileTask.debuggable = "false"
+            //turn on optimizations
+            compileTask.compilerArgs.addAll(['-O3'])
+        }else{
+            //Debug Build
+            compileTask.debuggable = "true"
+            compileTask.macros.put("DEBUG","1")
+            //Turn off compiler optimizations
+            compileTask.compilerArgs.addAll(['-O0'])
+        }
+
+        // C++ Language 17 standard
+        compileTask.compilerArgs.addAll(['-std=c++17'])
+        compileTask.source.from fileTree(dir: "src/main/c", include: "**/*.cpp")
+
+        if(org.gradle.internal.os.OperatingSystem.current()==org.gradle.internal.os.OperatingSystem.MAC_OS){
+
+        }else if(org.gradle.internal.os.OperatingSystem.current()==org.gradle.internal.os.OperatingSystem.LINUX){
+
+        }else if(org.gradle.internal.os.OperatingSystem.current()==org.gradle.internal.os.OperatingSystem.WINDOWS){
+        }
+
+        def linkTask = linkTask.get()
+        if (org.gradle.internal.os.OperatingSystem.current()==org.gradle.internal.os.OperatingSystem.LINUX) {
+           //add linux specific linker arguments
+            //linkTask.linkerArgs.addAll(['-lpthread'])
+        }
+    }
+}
+
+//Unit Testing Support
+unitTest {
+    targetMachines = [
+            machines.windows.x86_64,
+            machines.macOS.x86_64,
+            machines.linux.x86_64
+    ]
+    dependencies {
+        //use google
+        implementation('io.tinyleap.native:googletest:1.10.0')
+        //or
+        // implementation('io.tinyleap.native:cppunit:1.15.1')
+    }
+    binaries.configureEach {
+        println "Building for Platform " + org.gradle.internal.os.OperatingSystem.current()
+
+        def compileTask = compileTask.get()
+        compileTask.source.from fileTree(dir: "src/test/cpp", include: "**/*.cpp")
+        compileTask.compilerArgs.addAll(['-std=c++17'])
+    }
+
+}
+
+
+
