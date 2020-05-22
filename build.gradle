@@ -90,7 +90,7 @@ unitTest {
     dependencies {
         //use google
         implementation('io.tinyleap.native:googletest:1.10.0')
-        //or
+                                //OR
         // implementation('io.tinyleap.native:cppunit:1.15.1')
     }
     binaries.configureEach {
