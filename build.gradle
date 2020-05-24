@@ -69,6 +69,7 @@ application {
 
         // C++ Language 17 standard
         compileTask.compilerArgs.addAll(['-std=c++17'])
+        // ## if .cc  extension is used, change it here.
         compileTask.source.from fileTree(dir: "src/main/c", include: "**/*.cpp")
 
 
