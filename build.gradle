@@ -38,9 +38,11 @@ application {
         //see https://tinyleap.io/foundry/#browse/browse:libs-release:io%2Ftinyleap%2Fnative for the catalog.
         // Using SQLite for this sample.
         implementation('io.tinyleap.native:sqlite:3.31.1')
-        //
+        //####  if you statically link this dependency use ###
+        // implementation('io.tinyleap.native:sqlite:3.31.1'){
+        //    attributes { attribute(Attribute.of("org.gradle.native.linkage", Linkage), Linkage.STATIC) }
+        // }
     }
-
 
     binaries.configureEach {
         println "Building for Platform " + org.gradle.internal.os.OperatingSystem.current()
