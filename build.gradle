@@ -37,14 +37,17 @@ application {
     }
 
     dependencies {
-        //Dependencies for your application
-        //see https://tinyleap.io/foundry/#browse/browse:libs-release:io%2Ftinyleap%2Fnative for the catalog.
-        // Using SQLite for this sample.
+        // ## Dependencies for your application
+        // ## see https://tinyleap.io/foundry/#browse/browse:libs-release:io%2Ftinyleap%2Fnative for the catalog.
+        // ## Using SQLite for this sample.
         implementation('io.tinyleap.native:sqlite:3.31.1')
-        //####  if you want to statically link this dependency use ###
+        // ## if you want to statically link this dependency use ###
         // implementation('io.tinyleap.native:sqlite:3.31.1'){
         //    attributes { attribute(Attribute.of("org.gradle.native.linkage", Linkage), Linkage.STATIC) }
         // }
+
+        // ## Logging support
+        implementation('io.tinyleap.native:spdlog:1.6.0')
     }
 
     binaries.configureEach {
@@ -95,11 +98,13 @@ unitTest {
             machines.linux.x86_64
     ]
     dependencies {
-        //use google
+        // ## use google test
         implementation('io.tinyleap.native:googletest:1.10.0')
                                 //OR
+        // ## use cppunit
         // implementation('io.tinyleap.native:cppunit:1.15.1')
     }
+
     binaries.configureEach {
         println "Building for Platform " + org.gradle.internal.os.OperatingSystem.current()
 
